@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>나눔 꽃밭</title>
+  <style>
+    :root {
+      --green: #7cc66a;
+      --deep-green: #3c8a4a;
+      --yellow: #fff3a6;
+      --pink: #ffd3df;
+      --sky: #dff5ff;
+      --cream: #fff9ea;
+      --brown: #8b5a2b;
+      --text: #3b3b3b;
+      --shadow: rgba(0, 0, 0, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(var(--sky) 0 55%, #b8e986 55% 100%);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    header {
+      text-align: center;
+      padding: 28px 16px 12px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(32px, 5vw, 56px);
+      color: #2e7d32;
+      letter-spacing: -1px;
+    }
+
+    header p {
+      margin: 10px 0 0;
+      font-size: clamp(16px, 2.4vw, 22px);
+      font-weight: 700;
+    }
+
+    .cloud {
+      position: fixed;
+      background: white;
+      border-radius: 999px;
+      opacity: 0.85;
+      box-shadow: 28px 4px 0 4px white, 58px 0 0 0 white;
+      width: 72px;
+      height: 30px;
+      z-index: -1;
+    }
+
+    .cloud.c1 {
+      top: 80px;
+      left: 7%;
+    }
+
+    .cloud.c2 {
+      top: 140px;
+      right: 14%;
+      transform: scale(1.35);
+    }
+
+    .view-tabs {
+      width: min(1180px, 94vw);
+      margin: 0 auto 14px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 18px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 4px 10px var(--shadow);
+    }
+
+    .tab-btn.active {
+      background: #fff3a6;
+      box-shadow: inset 0 0 0 3px #f2ce4b, 0 4px 10px var(--shadow);
+    }
+
+    .wrap {
+      width: min(1180px, 94vw);
+      margin: 0 auto 28px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .garden-card,
+    .panel,
+    .gallery-card {
+      background: rgba(255, 255, 255, 0.86);
+      border: 4px solid rgba(255, 255, 255, 0.75);
+      border-radius: 28px;
+      box-shadow: 0 12px 28px var(--shadow);
+    }
+
+    .garden-card {
+      padding: 22px;
+      min-height: 640px;
+    }
+
+    .garden-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .garden-title h2 {
+      margin: 0;
+      font-size: 24px;
+      color: #2e7d32;
+    }
+
+    .badge {
+      background: #fff3a6;
+      border: 2px solid #f2ce4b;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .garden,
+    .gallery-garden {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 18px;
+      padding: 14px 4px 4px;
+    }
+
+    .flower {
+      position: relative;
+      height: 138px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 22px;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .flower:focus-visible {
+      outline: 5px solid #ffb300;
+    }
+
+    .flower:hover {
+      transform: translateY(-4px);
+      background: rgba(255, 255, 255, 0.34);
+    }
+
+    .flower.selected {
+      background: rgba(255, 243, 166, 0.72);
+      box-shadow: inset 0 0 0 4px #ffca28;
+    }
+
+    .flower.playing {
+      background: rgba(225, 255, 227, 0.8);
+      box-shadow: inset 0 0 0 4px #77c878;
+    }
+
+    .stem {
+      position: absolute;
+      left: 50%;
+      bottom: 19px;
+      width: 9px;
+      height: 66px;
+      border-radius: 999px;
+      background: var(--deep-green);
+      transform: translateX(-50%);
+    }
+
+    .leaf {
+      position: absolute;
+      bottom: 48px;
+      width: 36px;
+      height: 20px;
+      background: var(--green);
+      border-radius: 100% 0 100% 0;
+    }
+
+    .leaf.left {
+      left: calc(50% - 40px);
+      transform: rotate(-14deg);
+    }
+
+    .leaf.right {
+      left: calc(50% + 6px);
+      transform: scaleX(-1) rotate(-14deg);
+    }
+
+    .bud,
+    .bloom {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+      transform: translateX(-50%);
+    }
+
+    .bud {
+      width: 58px;
+      height: 58px;
+      background: #ffb6c8;
+      border-radius: 50% 50% 45% 45%;
+      box-shadow: inset 0 -10px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    .bud::after {
+      content: "🎙";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 25px;
+    }
+
+    .bloom {
+      width: 82px;
+      height: 82px;
+      animation: pop 0.45s ease;
+      filter: drop-shadow(0 5px 4px rgba(0, 0, 0, 0.12));
+    }
+
+    .petal {
+      position: absolute;
+      width: 42px;
+      height: 42px;
+      background: var(--pink);
+      border-radius: 50%;
+      left: 20px;
+      top: 20px;
+    }
+
+    .petal.p1 { transform: translateY(-25px); }
+    .petal.p2 { transform: translateX(25px); }
+    .petal.p3 { transform: translateY(25px); }
+    .petal.p4 { transform: translateX(-25px); }
+    .petal.p5 { transform: translate(18px, -18px); background: #ffdce6; }
+    .petal.p6 { transform: translate(-18px, 18px); background: #ffdce6; }
+
+    .center {
+      position: absolute;
+      left: 23px;
+      top: 23px;
+      width: 36px;
+      height: 36px;
+      background: #ffd54f;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 16px;
+      color: #7a4a00;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.08);
+    }
+
+    .soil {
+      position: absolute;
+      left: 50%;
+      bottom: 9px;
+      transform: translateX(-50%);
+      width: 92px;
+      height: 24px;
+      background: #ad7a45;
+      border-radius: 50%;
+    }
+
+    .flower-label {
+      position: absolute;
+      left: 50%;
+      bottom: -6px;
+      transform: translateX(-50%);
+      background: white;
+      border: 2px solid #d7c6a5;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+      max-width: 118px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sound-mark {
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #77c878;
+      color: white;
+      font-size: 14px;
+      font-weight: 900;
+      z-index: 2;
+    }
+
+    .sparkle {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%);
+      font-size: 22px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .flower.bloomed .sparkle {
+      animation: sparkle 1.1s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: translateX(-50%) scale(0.25); opacity: 0.2; }
+      60% { transform: translateX(-50%) scale(1.18); }
+      100% { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+
+    @keyframes sparkle {
+      0% { opacity: 0; transform: translate(-50%, 12px) scale(0.4); }
+      30% { opacity: 1; transform: translate(-50%, -10px) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -26px) scale(1); }
+    }
+
+    .panel {
+      padding: 22px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .panel h2 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      color: #2e7d32;
+    }
+
+    .selected-text {
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    label {
+      display: block;
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    input {
+      width: 100%;
+      border: 3px solid #d7e6d0;
+      border-radius: 16px;
+      padding: 13px 14px;
+      font-size: 18px;
+      font-weight: 800;
+      outline: none;
+      margin-bottom: 10px;
+      background: white;
+    }
+
+    input:focus {
+      border-color: #77c878;
+    }
+
+    .prompt-box {
+      background: var(--cream);
+      border: 2px dashed #e0b857;
+      border-radius: 20px;
+      padding: 15px;
+      line-height: 1.6;
+      font-weight: 750;
+      margin: 14px 0 16px;
+    }
+
+    .controls {
+      display: grid;
+      gap: 10px;
+    }
+
+    button.action {
+      border: none;
+      border-radius: 18px;
+      padding: 15px 16px;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    button.action:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    button.action:disabled {
+      opacity: 0.44;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .save-name {
+      background: #8ec5ff;
+      color: white;
+    }
+
+    .record {
+      background: #ff7b8a;
+      color: white;
+    }
+
+    .stop {
+      background: #ffcf55;
+      color: #513600;
+    }
+
+    .play {
+      background: #77c878;
+      color: white;
+    }
+
+    .reset-one {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .status {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      background: #eef7ff;
+      border: 2px solid #b8dcff;
+      font-weight: 850;
+      min-height: 56px;
+      line-height: 1.45;
+    }
+
+    .timer {
+      margin-top: 10px;
+      font-size: 34px;
+      font-weight: 1000;
+      text-align: center;
+      color: #e84f62;
+    }
+
+    .sample {
+      margin-top: 18px;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 14px;
+      border: 2px solid #e7e7e7;
+    }
+
+    .sample h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+    }
+
+    .sample p {
+      margin: 6px 0;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .bottom-tools {
+      width: min(1180px, 94vw);
+      margin: 0 auto 30px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .small-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 4px 10px var(--shadow);
+    }
+
+    .gallery-card {
+      width: min(1180px, 94vw);
+      margin: 0 auto 28px;
+      padding: 22px;
+      min-height: 640px;
+      display: none;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255,255,255,0.9), transparent 20%),
+        linear-gradient(#e4f8ff 0 45%, #a8df78 45% 100%);
+    }
+
+    .gallery-card.show {
+      display: block;
+    }
+
+    .gallery-header {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .gallery-header h2 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 48px);
+      color: #2e7d32;
+    }
+
+    .gallery-header p {
+      margin: 8px 0 0;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .gallery-message {
+      text-align: center;
+      font-size: 22px;
+      line-height: 1.5;
+      font-weight: 1000;
+      background: rgba(255, 255, 255, 0.82);
+      border-radius: 24px;
+      padding: 18px;
+      margin-top: 8px;
+    }
+
+
+    .gallery-actions {
+      display: none;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .gallery-actions.show {
+      display: flex;
+    }
+
+
+    .save-gallery-btn {
+      background: #8ec5ff;
+      color: white;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.16);
+    }
+
+    .save-audio-btn {
+      background: #ff9f6e;
+      color: white;
+      box-shadow: 0 5px 0 rgba(0, 0, 0, 0.16);
+    }
+
+    .gallery-save-box {
+      width: min(520px, 94%);
+      margin: 14px auto 4px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 2px dashed #e0b857;
+      border-radius: 20px;
+      padding: 14px;
+      text-align: left;
+    }
+
+    .gallery-save-box label {
+      margin-bottom: 7px;
+      color: #2e7d32;
+    }
+
+    .gallery-save-box input {
+      margin-bottom: 0;
+    }
+
+    .notice {
+      width: min(1180px, 94vw);
+      margin: 0 auto 36px;
+      background: rgba(255, 255, 255, 0.78);
+      border-radius: 20px;
+      padding: 15px 18px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 980px) {
+      .wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .panel {
+        position: static;
+      }
+
+      .garden,
+      .gallery-garden {
+        grid-template-columns: repeat(4, minmax(100px, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .garden,
+      .gallery-garden {
+        grid-template-columns: repeat(3, minmax(100px, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .garden,
+      .gallery-garden {
+        grid-template-columns: repeat(2, minmax(100px, 1fr));
+        gap: 14px;
+      }
+
+      .flower {
+        height: 128px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+
+  <header>
+    <h1>🌼 나눔 꽃밭 🌼</h1>
+    <p>다정한 말이 꽃을 피워요.</p>
+  </header>
+
+  <div class="view-tabs">
+    <button class="tab-btn active" id="recordViewBtn">🎙 녹음 꽃밭</button>
+    <button class="tab-btn" id="galleryViewBtn">🌸 꽃밭 갤러리</button>
+  </div>
+
+  <main class="wrap" id="recordView">
+    <section class="garden-card">
+      <div class="garden-title">
+        <h2>우리 반 나눔 꽃밭</h2>
+        <div class="badge" id="flowerCount">0 / 16 송이 피어남</div>
+      </div>
+
+      <div class="garden" id="garden"></div>
+    </section>
+
+    <aside class="panel">
+      <h2>🎙 나눔 말 녹음하기</h2>
+      <p class="selected-text" id="selectedText">꽃을 먼저 골라주세요.</p>
+
+      <label for="nameInput">아이 이름</label>
+      <input id="nameInput" type="text" placeholder="예: 민준, 서아" disabled />
+
+      <div class="controls">
+        <button class="action save-name" id="saveNameBtn" disabled>이름 저장</button>
+      </div>
+
+      <div class="prompt-box">
+        <strong>말하기 예시</strong><br />
+        “친구야, 내가 도와줄게.”<br />
+        “우리 같이 쓰자.”<br />
+        “속상했겠다. 괜찮아?”<br />
+        “내가 기다려줄게.”
+      </div>
+
+      <div class="controls">
+        <button class="action record" id="recordBtn" disabled>🎙 녹음 시작</button>
+        <button class="action stop" id="stopBtn" disabled>⏹ 녹음 끝</button>
+        <button class="action play" id="playBtn" disabled>▶ 선택한 꽃 듣기</button>
+        <button class="action reset-one" id="deleteBtn" disabled>🗑 이 꽃 다시 심기</button>
+      </div>
+
+      <div class="timer" id="timer">00:00</div>
+
+      <div class="status" id="status">
+        꽃을 누른 뒤 이름을 입력하고 녹음해 주세요.
+      </div>
+    </aside>
+  </main>
+
+  <section class="gallery-card" id="galleryView">
+    <div class="gallery-header">
+      <h2>🌸 우리 반 나눔 꽃밭 갤러리 🌸</h2>
+      <p id="gallerySubText">16명의 나눔 말이 모두 꽃으로 피어나면 완성됩니다.</p>
+    </div>
+
+    <div class="gallery-garden" id="galleryGarden"></div>
+
+    <div class="gallery-message" id="galleryMessage">
+      피어난 꽃을 누르면 아이들의 목소리가 바로 들려요.
+    </div>
+
+    <div class="gallery-actions hidden" id="galleryActions">
+      <div class="gallery-save-box">
+        <label for="classNameInput">저장 파일에 넣을 반 이름</label>
+        <input id="classNameInput" type="text" placeholder="예: 달님반, 꽃님반, 5세 사랑반" />
+      </div>
+      <button class="small-btn save-gallery-btn" id="saveGalleryBtn">🖼 꽃밭 화면 저장</button>
+      <button class="small-btn save-audio-btn" id="saveAudioBtn">🔊 전체 음성 저장</button>
+    </div>
+  </section>
+
+  <div class="bottom-tools">
+    <button class="small-btn" id="playAllBtn">🌸 피어난 꽃 모두 듣기</button>
+    <button class="small-btn" id="resetAllBtn">🧹 꽃밭 전체 지우기</button>
+  </div>
+
+  <div class="notice">
+    <strong>사용 안내</strong><br />
+    번호꽃 대신 아이 이름을 입력할 수 있고,
+    녹음 후 피어난 꽃을 누르면 아이 목소리가 바로 재생됩니다.
+    16명 모두 녹음하면 꽃밭 갤러리에서 전체 꽃이 핀 모습을 볼 수 있습니다.
+    녹음 자료는 외부 서버로 올라가지 않고 현재 기기의 브라우저 안에 저장됩니다.
+  </div>
+
+  <script>
+    const TOTAL_FLOWERS = 16;
+    const DB_NAME = "NanumFlowerGarden_OriginalDesign_Names_Gallery_v1";
+    const RECORD_STORE = "recordings";
+    const NAME_STORE = "names";
+
+    let db;
+    let selectedFlower = null;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let timerInterval = null;
+    let seconds = 0;
+    let stream = null;
+    let currentAudio = null;
+
+    const recordView = document.getElementById("recordView");
+    const galleryView = document.getElementById("galleryView");
+    const recordViewBtn = document.getElementById("recordViewBtn");
+    const galleryViewBtn = document.getElementById("galleryViewBtn");
+
+    const garden = document.getElementById("garden");
+    const galleryGarden = document.getElementById("galleryGarden");
+    const gallerySubText = document.getElementById("gallerySubText");
+    const galleryMessage = document.getElementById("galleryMessage");
+
+    const selectedText = document.getElementById("selectedText");
+    const statusEl = document.getElementById("status");
+    const timerEl = document.getElementById("timer");
+    const flowerCountEl = document.getElementById("flowerCount");
+    const nameInput = document.getElementById("nameInput");
+
+    const saveNameBtn = document.getElementById("saveNameBtn");
+    const recordBtn = document.getElementById("recordBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const playBtn = document.getElementById("playBtn");
+    const deleteBtn = document.getElementById("deleteBtn");
+    const resetAllBtn = document.getElementById("resetAllBtn");
+    const playAllBtn = document.getElementById("playAllBtn");
+    const galleryActions = document.getElementById("galleryActions");
+    const classNameInput = document.getElementById("classNameInput");
+    const saveGalleryBtn = document.getElementById("saveGalleryBtn");
+    const saveAudioBtn = document.getElementById("saveAudioBtn");
+
+    const flowers = new Map();
+
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+
+        request.onupgradeneeded = function(event) {
+          const database = event.target.result;
+          if (!database.objectStoreNames.contains(RECORD_STORE)) {
+            database.createObjectStore(RECORD_STORE, { keyPath: "id" });
+          }
+          if (!database.objectStoreNames.contains(NAME_STORE)) {
+            database.createObjectStore(NAME_STORE, { keyPath: "id" });
+          }
+        };
+
+        request.onsuccess = function(event) {
+          resolve(event.target.result);
+        };
+
+        request.onerror = function(event) {
+          reject(event.target.error);
+        };
+      });
+    }
+
+    function putItem(storeName, item) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        store.put(item);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    function getItem(storeName, id) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readonly");
+        const store = tx.objectStore(storeName);
+        const request = store.get(id);
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function getAllItems(storeName) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readonly");
+        const store = tx.objectStore(storeName);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function deleteItem(storeName, id) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        store.delete(id);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    function clearStore(storeName) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        store.clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    async function saveRecording(id, blob) {
+      await putItem(RECORD_STORE, {
+        id,
+        blob,
+        savedAt: new Date().toISOString()
+      });
+    }
+
+    async function getRecording(id) {
+      return await getItem(RECORD_STORE, id);
+    }
+
+    async function getAllRecordings() {
+      return await getAllItems(RECORD_STORE);
+    }
+
+    async function saveName(id, name) {
+      await putItem(NAME_STORE, {
+        id,
+        name: name.trim(),
+        savedAt: new Date().toISOString()
+      });
+    }
+
+    async function getName(id) {
+      const item = await getItem(NAME_STORE, id);
+      return item && item.name ? item.name : "";
+    }
+
+    async function getAllNames() {
+      return await getAllItems(NAME_STORE);
+    }
+
+    function getFlowerNumber(id) {
+      return Number(id.replace("flower", ""));
+    }
+
+    function makeFlowerButton(number, bloomed = false, name = "", isGallery = false) {
+      const id = `flower${number}`;
+      const btn = document.createElement("button");
+      btn.className = bloomed ? "flower bloomed" : "flower";
+      btn.type = "button";
+      btn.setAttribute("aria-label", `${name || number + "번 꽃"}`);
+      btn.dataset.id = id;
+
+      const label = name || `${number}번 꽃`;
+
+      btn.innerHTML = `
+        <div class="sparkle">✨</div>
+        ${bloomed ? '<div class="sound-mark">▶</div>' : ''}
+        <div class="soil"></div>
+        <div class="stem"></div>
+        <div class="leaf left"></div>
+        <div class="leaf right"></div>
+        <div class="${bloomed ? "bloom" : "bud"}">
+          ${bloomed ? `
+            <div class="petal p1"></div>
+            <div class="petal p2"></div>
+            <div class="petal p3"></div>
+            <div class="petal p4"></div>
+            <div class="petal p5"></div>
+            <div class="petal p6"></div>
+            <div class="center">♥</div>
+          ` : ""}
+        </div>
+        <div class="flower-label">${label}</div>
+      `;
+
+      btn.addEventListener("click", async () => {
+        const saved = await getRecording(id);
+
+        if (saved) {
+          await playFlower(id);
+        } else if (!isGallery) {
+          await selectFlower(number);
+        }
+      });
+
+      return btn;
+    }
+
+
+    function updateGalleryActionVisibility(completed) {
+      if (!galleryActions) return;
+      galleryActions.classList.toggle("hidden", !completed);
+      galleryActions.classList.toggle("show", completed);
+    }
+
+    function roundedRect(ctx, x, y, w, h, r, fillStyle, strokeStyle, lineWidth = 0) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+      if (fillStyle) {
+        ctx.fillStyle = fillStyle;
+        ctx.fill();
+      }
+      if (strokeStyle && lineWidth > 0) {
+        ctx.lineWidth = lineWidth;
+        ctx.strokeStyle = strokeStyle;
+        ctx.stroke();
+      }
+    }
+
+    function drawFlowerCanvas(ctx, centerX, topY, name) {
+      const petalColor = "#ffd3df";
+      const petalColor2 = "#ffdce6";
+      const centerColor = "#ffd54f";
+      const stemColor = "#3c8a4a";
+      const leafColor = "#7cc66a";
+      const soilColor = "#ad7a45";
+
+      // petals
+      const petals = [
+        [0, -30, petalColor],
+        [30, 0, petalColor],
+        [0, 30, petalColor],
+        [-30, 0, petalColor],
+        [22, -22, petalColor2],
+        [-22, 22, petalColor2],
+      ];
+      for (const [dx, dy, color] of petals) {
+        ctx.beginPath();
+        ctx.fillStyle = color;
+        ctx.arc(centerX + dx, topY + 44 + dy, 24, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // center
+      ctx.beginPath();
+      ctx.fillStyle = centerColor;
+      ctx.arc(centerX, topY + 44, 20, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#7a4a00";
+      ctx.font = "bold 18px Pretendard, Noto Sans KR, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("♥", centerX, topY + 45);
+
+      // stem
+      ctx.fillStyle = stemColor;
+      roundedRect(ctx, centerX - 4, topY + 76, 8, 54, 8, stemColor, null, 0);
+
+      // leaves
+      ctx.save();
+      ctx.translate(centerX - 28, topY + 94);
+      ctx.rotate(-0.45);
+      ctx.fillStyle = leafColor;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 18, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(centerX + 28, topY + 94);
+      ctx.rotate(0.45);
+      ctx.fillStyle = leafColor;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 18, 10, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // soil
+      ctx.beginPath();
+      ctx.fillStyle = soilColor;
+      ctx.ellipse(centerX, topY + 132, 42, 12, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // label
+      roundedRect(ctx, centerX - 45, topY + 138, 90, 28, 14, "#ffffff", "#d7c6a5", 2);
+      ctx.fillStyle = "#3b3b3b";
+      ctx.font = "bold 13px Pretendard, Noto Sans KR, sans-serif";
+      ctx.fillText(name || "꽃", centerX, topY + 152);
+    }
+
+    function getClassFileName(prefix) {
+      const rawName = classNameInput && classNameInput.value.trim()
+        ? classNameInput.value.trim()
+        : "우리반";
+      const safeName = rawName.replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, "_");
+      return `${safeName}_${prefix}`;
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 500);
+    }
+
+    async function saveGalleryImage() {
+      const recordings = await getAllRecordings();
+      if (recordings.length !== TOTAL_FLOWERS) {
+        alert("16개 꽃이 모두 피어난 뒤에 화면을 저장할 수 있어요.");
+        return;
+      }
+
+      const names = await getAllNames();
+      const nameMap = new Map(names.map(item => [item.id, item.name]));
+
+      const canvas = document.createElement("canvas");
+      canvas.width = 1600;
+      canvas.height = 1200;
+      const ctx = canvas.getContext("2d");
+
+      // background
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, "#e4f8ff");
+      grad.addColorStop(0.45, "#e4f8ff");
+      grad.addColorStop(0.45, "#a8df78");
+      grad.addColorStop(1, "#a8df78");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // soft clouds
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.beginPath();
+      ctx.arc(220, 110, 40, 0, Math.PI * 2);
+      ctx.arc(270, 95, 52, 0, Math.PI * 2);
+      ctx.arc(330, 112, 38, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(1250, 150, 36, 0, Math.PI * 2);
+      ctx.arc(1290, 135, 46, 0, Math.PI * 2);
+      ctx.arc(1345, 150, 34, 0, Math.PI * 2);
+      ctx.fill();
+
+      // main title card
+      roundedRect(ctx, 120, 70, 1360, 1040, 28, "rgba(255,255,255,0.86)", "rgba(255,255,255,0.75)", 4);
+
+      const classDisplayName = classNameInput && classNameInput.value.trim()
+        ? classNameInput.value.trim()
+        : "우리 반";
+
+      ctx.fillStyle = "#2e7d32";
+      ctx.font = "bold 54px Pretendard, Noto Sans KR, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`🌸 ${classDisplayName} 나눔 꽃밭 갤러리 🌸`, canvas.width / 2, 130);
+
+      ctx.fillStyle = "#3b3b3b";
+      ctx.font = "bold 26px Pretendard, Noto Sans KR, sans-serif";
+      ctx.fillText("16명의 나눔 말이 모두 꽃으로 피어났어요.", canvas.width / 2, 182);
+
+      const startX = 250;
+      const gapX = 280;
+      const startY = 250;
+      const gapY = 210;
+
+      for (let i = 1; i <= TOTAL_FLOWERS; i++) {
+        const col = (i - 1) % 4;
+        const row = Math.floor((i - 1) / 4);
+        const id = `flower${i}`;
+        const name = nameMap.get(id) || `${i}번 꽃`;
+        const x = startX + col * gapX;
+        const y = startY + row * gapY;
+        drawFlowerCanvas(ctx, x, y, name);
+      }
+
+      roundedRect(ctx, 320, 1020, 960, 54, 22, "rgba(255,255,255,0.82)", null, 0);
+      ctx.fillStyle = "#2f6d2f";
+      ctx.font = "bold 24px Pretendard, Noto Sans KR, sans-serif";
+      ctx.fillText("다정한 말이 꽃을 피워요.", canvas.width / 2, 1048);
+
+      canvas.toBlob(blob => {
+        if (blob) {
+          downloadBlob(blob, getClassFileName("나눔_꽃밭_갤러리.png"));
+        }
+      }, "image/png");
+    }
+
+    function audioBufferToWavBlob(buffer) {
+      const numChannels = buffer.numberOfChannels;
+      const sampleRate = buffer.sampleRate;
+      const format = 1;
+      const bitDepth = 16;
+
+      let result;
+      if (numChannels === 1) {
+        result = buffer.getChannelData(0);
+      } else {
+        const length = buffer.length * numChannels;
+        result = new Float32Array(length);
+        const channels = [];
+        for (let i = 0; i < numChannels; i++) {
+          channels.push(buffer.getChannelData(i));
+        }
+        let offset = 0;
+        for (let i = 0; i < buffer.length; i++) {
+          for (let ch = 0; ch < numChannels; ch++) {
+            result[offset++] = channels[ch][i];
+          }
+        }
+      }
+
+      const bytesPerSample = bitDepth / 8;
+      const blockAlign = numChannels * bytesPerSample;
+      const bufferLength = 44 + result.length * bytesPerSample;
+      const arrayBuffer = new ArrayBuffer(bufferLength);
+      const view = new DataView(arrayBuffer);
+
+      function writeString(view, offset, string) {
+        for (let i = 0; i < string.length; i++) {
+          view.setUint8(offset + i, string.charCodeAt(i));
+        }
+      }
+
+      let offset = 0;
+      writeString(view, offset, "RIFF"); offset += 4;
+      view.setUint32(offset, 36 + result.length * bytesPerSample, true); offset += 4;
+      writeString(view, offset, "WAVE"); offset += 4;
+      writeString(view, offset, "fmt "); offset += 4;
+      view.setUint32(offset, 16, true); offset += 4;
+      view.setUint16(offset, format, true); offset += 2;
+      view.setUint16(offset, numChannels, true); offset += 2;
+      view.setUint32(offset, sampleRate, true); offset += 4;
+      view.setUint32(offset, sampleRate * blockAlign, true); offset += 4;
+      view.setUint16(offset, blockAlign, true); offset += 2;
+      view.setUint16(offset, bitDepth, true); offset += 2;
+      writeString(view, offset, "data"); offset += 4;
+      view.setUint32(offset, result.length * bytesPerSample, true); offset += 4;
+
+      let index = 44;
+      for (let i = 0; i < result.length; i++, index += 2) {
+        let s = Math.max(-1, Math.min(1, result[i]));
+        view.setInt16(index, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+      }
+
+      return new Blob([view], { type: "audio/wav" });
+    }
+
+    async function saveAllAudio() {
+      const recordings = await getAllRecordings();
+      if (recordings.length !== TOTAL_FLOWERS) {
+        alert("16개 꽃이 모두 피어난 뒤에 전체 음성을 저장할 수 있어요.");
+        return;
+      }
+
+      const sorted = recordings.sort((a, b) => getFlowerNumber(a.id) - getFlowerNumber(b.id));
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) {
+        alert("이 브라우저에서는 전체 음성 저장을 지원하지 않아요.");
+        return;
+      }
+
+      const audioContext = new AudioContextClass();
+      const decodedBuffers = [];
+
+      for (const item of sorted) {
+        const arrayBuffer = await item.blob.arrayBuffer();
+        const decoded = await audioContext.decodeAudioData(arrayBuffer.slice(0));
+        decodedBuffers.push(decoded);
+      }
+
+      if (decodedBuffers.length === 0) {
+        alert("저장할 음성이 없어요.");
+        return;
+      }
+
+      const sampleRate = decodedBuffers[0].sampleRate;
+      const channels = Math.max(...decodedBuffers.map(buf => buf.numberOfChannels));
+      const totalLength = decodedBuffers.reduce((sum, buf) => sum + buf.length, 0);
+
+      const offline = new OfflineAudioContext(channels, totalLength, sampleRate);
+      let offset = 0;
+
+      for (const buf of decodedBuffers) {
+        const source = offline.createBufferSource();
+        source.buffer = buf;
+        source.connect(offline.destination);
+        source.start(offset / sampleRate);
+        offset += buf.length;
+      }
+
+      const rendered = await offline.startRendering();
+      const wavBlob = audioBufferToWavBlob(rendered);
+      downloadBlob(wavBlob, getClassFileName("나눔_꽃밭_전체_음성.wav"));
+
+      if (audioContext.close) {
+        await audioContext.close();
+      }
+    }
+
+    async function renderGarden() {
+      garden.innerHTML = "";
+      flowers.clear();
+
+      const savedRecordings = await getAllRecordings();
+      const savedNames = await getAllNames();
+
+      const savedIds = new Set(savedRecordings.map(item => item.id));
+      const nameMap = new Map(savedNames.map(item => [item.id, item.name]));
+
+      for (let i = 1; i <= TOTAL_FLOWERS; i++) {
+        const id = `flower${i}`;
+        const btn = makeFlowerButton(i, savedIds.has(id), nameMap.get(id) || "", false);
+        garden.appendChild(btn);
+        flowers.set(id, btn);
+      }
+
+      updateCount(savedRecordings.length);
+      updateSelectedClass();
+      await updateButtons();
+      await renderGallery();
+
+      const allComplete = savedRecordings.length === TOTAL_FLOWERS;
+      updateGalleryActionVisibility(allComplete);
+
+      if (allComplete) {
+        gallerySubText.textContent = "16명의 나눔 말이 모두 꽃으로 피어났어요.";
+        galleryMessage.textContent = "우리 반 16명의 나눔 마음이 모두 꽃으로 피어났어요. 꽃을 누르면 목소리가 바로 들려요.";
+      }
+    }
+
+    async function renderGallery() {
+      galleryGarden.innerHTML = "";
+
+      const savedRecordings = await getAllRecordings();
+      const savedNames = await getAllNames();
+
+      const savedIds = new Set(savedRecordings.map(item => item.id));
+      const nameMap = new Map(savedNames.map(item => [item.id, item.name]));
+
+      for (let i = 1; i <= TOTAL_FLOWERS; i++) {
+        const id = `flower${i}`;
+        const btn = makeFlowerButton(i, savedIds.has(id), nameMap.get(id) || "", true);
+        galleryGarden.appendChild(btn);
+      }
+
+      const allComplete = savedRecordings.length === TOTAL_FLOWERS;
+      updateGalleryActionVisibility(allComplete);
+
+      if (!allComplete) {
+        gallerySubText.textContent = "16명의 나눔 말이 모두 꽃으로 피어나면 완성됩니다.";
+        galleryMessage.textContent = `아직 ${TOTAL_FLOWERS - savedRecordings.length}송이의 꽃이 더 필요해요.`;
+      } else {
+        gallerySubText.textContent = "16명의 나눔 말이 모두 꽃으로 피어났어요.";
+        galleryMessage.textContent = "우리 반 16명의 나눔 마음이 모두 꽃으로 피어났어요. 꽃을 누르면 목소리가 바로 들려요.";
+      }
+    }
+
+    function updateCount(count) {
+      flowerCountEl.textContent = `${count} / ${TOTAL_FLOWERS} 송이 피어남`;
+    }
+
+    function updateSelectedClass() {
+      for (const [id, btn] of flowers) {
+        btn.classList.toggle("selected", id === selectedFlower);
+      }
+    }
+
+    async function updateButtons() {
+      const hasSelected = !!selectedFlower;
+      let hasRecording = false;
+
+      if (hasSelected && db) {
+        const saved = await getRecording(selectedFlower);
+        hasRecording = !!saved;
+      }
+
+      nameInput.disabled = !hasSelected || !!mediaRecorder;
+      saveNameBtn.disabled = !hasSelected || !!mediaRecorder;
+      recordBtn.disabled = !hasSelected || !!mediaRecorder;
+      stopBtn.disabled = !mediaRecorder;
+      playBtn.disabled = !hasSelected || !hasRecording || !!mediaRecorder;
+      deleteBtn.disabled = !hasSelected || !hasRecording || !!mediaRecorder;
+    }
+
+    async function selectFlower(number) {
+      selectedFlower = `flower${number}`;
+      const saved = await getRecording(selectedFlower);
+      const name = await getName(selectedFlower);
+
+      nameInput.value = name;
+      selectedText.textContent = name ? `${name} 꽃을 골랐어요.` : `${number}번 꽃을 골랐어요.`;
+
+      if (saved) {
+        statusEl.textContent = `${name || number + "번 꽃"}이 활짝 피었어요. 꽃을 누르면 목소리가 바로 들려요.`;
+      } else {
+        statusEl.textContent = `${name || number + "번 꽃"}은 아직 꽃봉오리예요. 이름을 입력하고 나눔 말을 녹음해보세요.`;
+      }
+
+      updateSelectedClass();
+      await updateButtons();
+    }
+
+    async function saveSelectedName() {
+      if (!selectedFlower) return;
+
+      const name = nameInput.value.trim();
+      const number = getFlowerNumber(selectedFlower);
+
+      if (!name) {
+        statusEl.textContent = "아이 이름을 입력해 주세요.";
+        nameInput.focus();
+        return;
+      }
+
+      await saveName(selectedFlower, name);
+      statusEl.textContent = `${name} 이름이 저장되었어요. 나눔 말을 녹음해 주세요.`;
+      await renderGarden();
+      await selectFlower(number);
+    }
+
+    function startTimer() {
+      seconds = 0;
+      timerEl.textContent = "00:00";
+      timerInterval = setInterval(() => {
+        seconds++;
+        const min = String(Math.floor(seconds / 60)).padStart(2, "0");
+        const sec = String(seconds % 60).padStart(2, "0");
+        timerEl.textContent = `${min}:${sec}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    async function startRecording() {
+      if (!selectedFlower) {
+        statusEl.textContent = "먼저 꽃을 골라주세요.";
+        return;
+      }
+
+      if (nameInput.value.trim()) {
+        await saveName(selectedFlower, nameInput.value.trim());
+      }
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.addEventListener("dataavailable", event => {
+          if (event.data.size > 0) {
+            audioChunks.push(event.data);
+          }
+        });
+
+        mediaRecorder.addEventListener("stop", async () => {
+          const mimeType = mediaRecorder.mimeType || "audio/webm";
+          const audioBlob = new Blob(audioChunks, { type: mimeType });
+
+          await saveRecording(selectedFlower, audioBlob);
+
+          if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
+          }
+
+          const number = getFlowerNumber(selectedFlower);
+          const name = await getName(selectedFlower);
+
+          mediaRecorder = null;
+          stopTimer();
+
+          statusEl.textContent = `${name || number + "번 꽃"}에 나눔 말이 저장되었어요. 꽃이 활짝 피어났어요! 이제 꽃을 누르면 바로 목소리가 들려요.`;
+          await renderGarden();
+          await selectFlower(number);
+
+          const savedRecordings = await getAllRecordings();
+          if (savedRecordings.length === TOTAL_FLOWERS) {
+            showGallery();
+          }
+        });
+
+        mediaRecorder.start();
+        startTimer();
+        statusEl.textContent = "녹음 중이에요. 아이의 나눔 말을 말한 뒤 녹음 끝을 눌러주세요.";
+        await updateButtons();
+
+      } catch (error) {
+        console.error(error);
+        statusEl.textContent = "마이크 권한이 필요해요. 브라우저에서 마이크 사용을 허용해주세요.";
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== "inactive") {
+        mediaRecorder.stop();
+      }
+    }
+
+    async function playFlower(id) {
+      const saved = await getRecording(id);
+      if (!saved) {
+        statusEl.textContent = "아직 이 꽃에는 녹음된 나눔 말이 없어요.";
+        return;
+      }
+
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+
+      document.querySelectorAll(".flower.playing").forEach(el => el.classList.remove("playing"));
+      document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.classList.add("playing"));
+
+      const name = await getName(id);
+      const number = getFlowerNumber(id);
+      const audioUrl = URL.createObjectURL(saved.blob);
+      const audio = new Audio(audioUrl);
+      currentAudio = audio;
+
+      const message = `${name || number + "번 꽃"}의 나눔 말을 듣고 있어요.`;
+      statusEl.textContent = message;
+      galleryMessage.textContent = message;
+
+      audio.play();
+
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.classList.remove("playing"));
+        currentAudio = null;
+      };
+
+      audio.onerror = () => {
+        URL.revokeObjectURL(audioUrl);
+        document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.classList.remove("playing"));
+        currentAudio = null;
+      };
+    }
+
+    async function playSelected() {
+      if (!selectedFlower) return;
+      await playFlower(selectedFlower);
+    }
+
+    async function deleteSelected() {
+      if (!selectedFlower) return;
+
+      const number = getFlowerNumber(selectedFlower);
+      const name = await getName(selectedFlower);
+      const ok = confirm(`${name || number + "번 꽃"}의 녹음 내용을 지울까요? 이름은 남아 있고 목소리만 지워집니다.`);
+
+      if (!ok) return;
+
+      await deleteItem(RECORD_STORE, selectedFlower);
+      statusEl.textContent = `${name || number + "번 꽃"}을 다시 녹음할 수 있어요.`;
+      await renderGarden();
+      await selectFlower(number);
+    }
+
+    async function resetAll() {
+      const ok = confirm("나눔 꽃밭의 모든 이름과 녹음을 지울까요?");
+      if (!ok) return;
+
+      await clearStore(RECORD_STORE);
+      await clearStore(NAME_STORE);
+
+      selectedFlower = null;
+      nameInput.value = "";
+      selectedText.textContent = "꽃을 먼저 골라주세요.";
+      statusEl.textContent = "꽃밭을 비웠어요. 다시 이름과 나눔 말을 심어보세요.";
+      timerEl.textContent = "00:00";
+
+      await renderGarden();
+      showRecordView();
+    }
+
+    async function playAll() {
+      const saved = await getAllRecordings();
+      const sorted = saved.sort((a, b) => getFlowerNumber(a.id) - getFlowerNumber(b.id));
+
+      if (sorted.length === 0) {
+        statusEl.textContent = "아직 피어난 꽃이 없어요.";
+        galleryMessage.textContent = "아직 피어난 꽃이 없어요.";
+        return;
+      }
+
+      statusEl.textContent = `피어난 꽃 ${sorted.length}송이의 나눔 말을 차례대로 들려줄게요.`;
+      galleryMessage.textContent = statusEl.textContent;
+
+      for (const item of sorted) {
+        await new Promise(async resolve => {
+          const name = await getName(item.id);
+          document.querySelectorAll(".flower.playing").forEach(el => el.classList.remove("playing"));
+          document.querySelectorAll(`[data-id="${item.id}"]`).forEach(el => el.classList.add("playing"));
+
+          const audioUrl = URL.createObjectURL(item.blob);
+          const audio = new Audio(audioUrl);
+
+          const msg = `${name || getFlowerNumber(item.id) + "번 꽃"}의 나눔 말을 듣고 있어요.`;
+          statusEl.textContent = msg;
+          galleryMessage.textContent = msg;
+
+          audio.onended = () => {
+            URL.revokeObjectURL(audioUrl);
+            document.querySelectorAll(`[data-id="${item.id}"]`).forEach(el => el.classList.remove("playing"));
+            setTimeout(resolve, 500);
+          };
+
+          audio.onerror = () => {
+            URL.revokeObjectURL(audioUrl);
+            document.querySelectorAll(`[data-id="${item.id}"]`).forEach(el => el.classList.remove("playing"));
+            resolve();
+          };
+
+          audio.play();
+        });
+      }
+
+      statusEl.textContent = "피어난 꽃들의 나눔 말을 모두 들었어요.";
+      galleryMessage.textContent = "피어난 꽃들의 나눔 말을 모두 들었어요.";
+    }
+
+    function showRecordView() {
+      recordView.classList.remove("hidden");
+      galleryView.classList.remove("show");
+      recordViewBtn.classList.add("active");
+      galleryViewBtn.classList.remove("active");
+    }
+
+    async function showGallery() {
+      await renderGallery();
+      recordView.classList.add("hidden");
+      galleryView.classList.add("show");
+      recordViewBtn.classList.remove("active");
+      galleryViewBtn.classList.add("active");
+    }
+
+    recordViewBtn.addEventListener("click", showRecordView);
+    galleryViewBtn.addEventListener("click", showGallery);
+    saveNameBtn.addEventListener("click", saveSelectedName);
+    recordBtn.addEventListener("click", startRecording);
+    stopBtn.addEventListener("click", stopRecording);
+    playBtn.addEventListener("click", playSelected);
+    deleteBtn.addEventListener("click", deleteSelected);
+    resetAllBtn.addEventListener("click", resetAll);
+    playAllBtn.addEventListener("click", playAll);
+    saveGalleryBtn.addEventListener("click", saveGalleryImage);
+    saveAudioBtn.addEventListener("click", saveAllAudio);
+
+    nameInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        saveSelectedName();
+      }
+    });
+
+    async function init() {
+      if (!("mediaDevices" in navigator) || !("getUserMedia" in navigator.mediaDevices)) {
+        statusEl.textContent = "이 브라우저에서는 녹음 기능을 사용할 수 없어요. Chrome 또는 Edge 최신 버전을 사용해주세요.";
+        return;
+      }
+
+      try {
+        db = await openDB();
+        await renderGarden();
+      } catch (error) {
+        console.error(error);
+        statusEl.textContent = "저장 공간을 여는 중 문제가 생겼어요. 다른 브라우저에서 다시 열어보세요.";
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
