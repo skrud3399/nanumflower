@@ -69,6 +69,219 @@
       transform: scale(1.35);
     }
 
+
+    .home-screen {
+      width: min(1180px, 94vw);
+      margin: 14px auto 26px;
+      min-height: 74vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .home-card {
+      width: min(900px, 100%);
+      background: rgba(255, 255, 255, 0.88);
+      border: 4px solid rgba(255, 255, 255, 0.76);
+      border-radius: 34px;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.14);
+      padding: 34px 24px 36px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .home-card::before {
+      content: "";
+      position: absolute;
+      inset: auto auto -40px -30px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(255,211,223,0.65), rgba(255,211,223,0));
+      pointer-events: none;
+    }
+
+    .home-card::after {
+      content: "";
+      position: absolute;
+      inset: 20px -20px auto auto;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(255,243,166,0.6), rgba(255,243,166,0));
+      pointer-events: none;
+    }
+
+    .home-title {
+      margin: 0;
+      font-size: clamp(40px, 6vw, 72px);
+      color: #2e7d32;
+      letter-spacing: -1px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .home-subtitle {
+      margin: 14px 0 18px;
+      font-size: clamp(20px, 2.7vw, 30px);
+      font-weight: 900;
+      color: #4a4a4a;
+      position: relative;
+      z-index: 1;
+    }
+
+    .home-message {
+      width: min(620px, 92%);
+      margin: 0 auto 22px;
+      background: #fff9ea;
+      border: 2px dashed #e0b857;
+      border-radius: 24px;
+      padding: 18px;
+      line-height: 1.7;
+      font-size: 18px;
+      font-weight: 800;
+      position: relative;
+      z-index: 1;
+    }
+
+    .home-flowers {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin: 14px 0 22px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .mini-flower {
+      position: relative;
+      width: 92px;
+      height: 112px;
+    }
+
+    .mini-stem {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      width: 8px;
+      height: 46px;
+      transform: translateX(-50%);
+      background: #3c8a4a;
+      border-radius: 999px;
+    }
+
+    .mini-soil {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      width: 72px;
+      height: 18px;
+      transform: translateX(-50%);
+      background: #ad7a45;
+      border-radius: 50%;
+    }
+
+    .mini-bloom {
+      position: absolute;
+      left: 50%;
+      top: 8px;
+      width: 70px;
+      height: 70px;
+      transform: translateX(-50%);
+    }
+
+    .mini-petal {
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #ffd3df;
+    }
+
+    .mini-p1 { transform: translateY(-18px); }
+    .mini-p2 { transform: translateX(18px); }
+    .mini-p3 { transform: translateY(18px); }
+    .mini-p4 { transform: translateX(-18px); }
+    .mini-p5 { transform: translate(12px, -12px); background: #ffdce6; }
+    .mini-p6 { transform: translate(-12px, 12px); background: #ffdce6; }
+
+    .mini-center {
+      position: absolute;
+      left: 24px;
+      top: 24px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #ffd54f;
+    }
+
+    .home-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .home-start-btn, .home-guide-btn, .top-home-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-size: 18px;
+      font-weight: 1000;
+      cursor: pointer;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.13);
+    }
+
+    .home-start-btn {
+      background: #77c878;
+      color: white;
+    }
+
+    .home-guide-btn {
+      background: #fff3a6;
+      color: #5b4c00;
+    }
+
+    .top-home-wrap {
+      width: min(1180px, 94vw);
+      margin: 0 auto 10px;
+      display: none;
+      justify-content: flex-start;
+    }
+
+    .top-home-wrap.show {
+      display: flex;
+    }
+
+    .top-home-btn {
+      background: rgba(255,255,255,0.95);
+      color: #2e7d32;
+      padding: 11px 18px;
+      font-size: 16px;
+    }
+
+    .creator-sign {
+      margin-top: 18px;
+      font-size: 16px;
+      font-weight: 900;
+      color: #4b7f4b;
+      position: relative;
+      z-index: 1;
+    }
+
+    .creator-sign span {
+      display: inline-block;
+      background: rgba(255,255,255,0.75);
+      border: 2px solid #d7e6d0;
+      border-radius: 999px;
+      padding: 8px 14px;
+    }
+
     .view-tabs {
       width: min(1180px, 94vw);
       margin: 0 auto 14px;
@@ -648,12 +861,79 @@
     <p>다정한 말이 꽃을 피워요.</p>
   </header>
 
-  <div class="view-tabs">
+  <section class="home-screen" id="homeScreen">
+    <div class="home-card">
+      <h2 class="home-title">🌼 나눔 꽃밭 🌼</h2>
+      <p class="home-subtitle">다정한 말이 꽃을 피워요.</p>
+
+      <div class="home-message">
+        친구에게 들려주고 싶은 따뜻한 말을 녹음하면<br />
+        꽃봉오리가 아름다운 꽃으로 활짝 피어나요.
+      </div>
+
+      <div class="home-flowers" aria-hidden="true">
+        <div class="mini-flower">
+          <div class="mini-bloom">
+            <div class="mini-petal mini-p1"></div>
+            <div class="mini-petal mini-p2"></div>
+            <div class="mini-petal mini-p3"></div>
+            <div class="mini-petal mini-p4"></div>
+            <div class="mini-petal mini-p5"></div>
+            <div class="mini-petal mini-p6"></div>
+            <div class="mini-center"></div>
+          </div>
+          <div class="mini-stem"></div>
+          <div class="mini-soil"></div>
+        </div>
+        <div class="mini-flower">
+          <div class="mini-bloom">
+            <div class="mini-petal mini-p1"></div>
+            <div class="mini-petal mini-p2"></div>
+            <div class="mini-petal mini-p3"></div>
+            <div class="mini-petal mini-p4"></div>
+            <div class="mini-petal mini-p5"></div>
+            <div class="mini-petal mini-p6"></div>
+            <div class="mini-center"></div>
+          </div>
+          <div class="mini-stem"></div>
+          <div class="mini-soil"></div>
+        </div>
+        <div class="mini-flower">
+          <div class="mini-bloom">
+            <div class="mini-petal mini-p1"></div>
+            <div class="mini-petal mini-p2"></div>
+            <div class="mini-petal mini-p3"></div>
+            <div class="mini-petal mini-p4"></div>
+            <div class="mini-petal mini-p5"></div>
+            <div class="mini-petal mini-p6"></div>
+            <div class="mini-center"></div>
+          </div>
+          <div class="mini-stem"></div>
+          <div class="mini-soil"></div>
+        </div>
+      </div>
+
+      <div class="home-buttons">
+        <button class="home-start-btn" id="enterAppBtn">🌸 나눔 꽃밭 시작하기</button>
+        <button class="home-guide-btn" id="showGuideBtn">💛 어떻게 할까요?</button>
+      </div>
+
+      <div class="creator-sign">
+        <span>만든사람 child.learn</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="top-home-wrap" id="topHomeWrap">
+    <button class="top-home-btn" id="goHomeBtn">🏠 홈으로</button>
+  </div>
+
+  <div class="view-tabs hidden" id="appTabs">
     <button class="tab-btn active" id="recordViewBtn">🎙 녹음 꽃밭</button>
     <button class="tab-btn" id="galleryViewBtn">🌸 꽃밭 갤러리</button>
   </div>
 
-  <main class="wrap" id="recordView">
+  <main class="wrap hidden" id="recordView">
     <section class="garden-card">
       <div class="garden-title">
         <h2>우리 반 나눔 꽃밭</h2>
@@ -697,7 +977,7 @@
     </aside>
   </main>
 
-  <section class="gallery-card" id="galleryView">
+  <section class="gallery-card hidden" id="galleryView">
     <div class="gallery-header">
       <h2>🌸 우리 반 나눔 꽃밭 갤러리 🌸</h2>
       <p id="gallerySubText">16명의 나눔 말이 모두 꽃으로 피어나면 완성됩니다.</p>
@@ -719,12 +999,12 @@
     </div>
   </section>
 
-  <div class="bottom-tools">
+  <div class="bottom-tools hidden" id="bottomTools">
     <button class="small-btn" id="playAllBtn">🌸 피어난 꽃 모두 듣기</button>
     <button class="small-btn" id="resetAllBtn">🧹 꽃밭 전체 지우기</button>
   </div>
 
-  <div class="notice">
+  <div class="notice hidden" id="noticeBox">
     <strong>사용 안내</strong><br />
     번호꽃 대신 아이 이름을 입력할 수 있고,
     녹음 후 피어난 꽃을 누르면 아이 목소리가 바로 재생됩니다.
@@ -746,6 +1026,15 @@
     let seconds = 0;
     let stream = null;
     let currentAudio = null;
+
+    const homeScreen = document.getElementById("homeScreen");
+    const topHomeWrap = document.getElementById("topHomeWrap");
+    const appTabs = document.getElementById("appTabs");
+    const bottomTools = document.getElementById("bottomTools");
+    const noticeBox = document.getElementById("noticeBox");
+    const enterAppBtn = document.getElementById("enterAppBtn");
+    const showGuideBtn = document.getElementById("showGuideBtn");
+    const goHomeBtn = document.getElementById("goHomeBtn");
 
     const recordView = document.getElementById("recordView");
     const galleryView = document.getElementById("galleryView");
@@ -1567,16 +1856,39 @@
       galleryMessage.textContent = "피어난 꽃들의 나눔 말을 모두 들었어요.";
     }
 
+    function showHomeScreen() {
+      homeScreen.classList.remove("hidden");
+      topHomeWrap.classList.remove("show");
+      appTabs.classList.add("hidden");
+      recordView.classList.add("hidden");
+      galleryView.classList.add("hidden");
+      galleryView.classList.remove("show");
+      bottomTools.classList.add("hidden");
+      noticeBox.classList.add("hidden");
+    }
+
+    function showAppShell() {
+      homeScreen.classList.add("hidden");
+      topHomeWrap.classList.add("show");
+      appTabs.classList.remove("hidden");
+      bottomTools.classList.remove("hidden");
+      noticeBox.classList.remove("hidden");
+    }
+
     function showRecordView() {
+      showAppShell();
       recordView.classList.remove("hidden");
+      galleryView.classList.add("hidden");
       galleryView.classList.remove("show");
       recordViewBtn.classList.add("active");
       galleryViewBtn.classList.remove("active");
     }
 
     async function showGallery() {
+      showAppShell();
       await renderGallery();
       recordView.classList.add("hidden");
+      galleryView.classList.remove("hidden");
       galleryView.classList.add("show");
       recordViewBtn.classList.remove("active");
       galleryViewBtn.classList.add("active");
@@ -1584,6 +1896,11 @@
 
     recordViewBtn.addEventListener("click", showRecordView);
     galleryViewBtn.addEventListener("click", showGallery);
+    enterAppBtn.addEventListener("click", showRecordView);
+    goHomeBtn.addEventListener("click", showHomeScreen);
+    showGuideBtn.addEventListener("click", () => {
+      alert("꽃을 누르고 이름을 입력한 뒤, 다정한 말을 녹음해 주세요. 녹음이 끝나면 꽃이 활짝 피어나고, 꽃을 누르면 목소리가 바로 들려요.");
+    });
     saveNameBtn.addEventListener("click", saveSelectedName);
     recordBtn.addEventListener("click", startRecording);
     stopBtn.addEventListener("click", stopRecording);
@@ -1609,6 +1926,7 @@
       try {
         db = await openDB();
         await renderGarden();
+        showHomeScreen();
       } catch (error) {
         console.error(error);
         statusEl.textContent = "저장 공간을 여는 중 문제가 생겼어요. 다른 브라우저에서 다시 열어보세요.";
